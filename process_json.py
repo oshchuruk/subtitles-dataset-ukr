@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 import os
 import random
@@ -11,6 +13,15 @@ for path, dirs, files in os.walk("processed"):
     for f in filter(files, '*.json'):
         num_of_files += 1
 
+train_from = open("new_data/train.from", "w", encoding="utf-8")
+train_to = open("new_data/train.to", "w", encoding="utf-8")
+
+tst2012_from = open("new_data/tst2012.from", "w", encoding="utf-8")
+tst2012_to = open("new_data/tst2012.to", "w", encoding="utf-8")
+
+tst2013_from = open("new_data/tst2013.from", "w", encoding="utf-8")
+tst2013_to = open("new_data/tst2013.to", "w", encoding="utf-8")
+
 bar = ChargingBar("Progress", max=num_of_files)
 for path, dirs, files in os.walk("processed"):
 
@@ -21,15 +32,6 @@ for path, dirs, files in os.walk("processed"):
         file = open(fullpath, "r")
         file_string = file.read()
         file_convos = json.loads(file_string.encode("utf-8"))
-
-        train_from = open("new_data/train.from", "w")
-        train_to = open("new_data/train.to", "w")
-
-        tst2012_from = open("new_data/tst2012.from", "w")
-        tst2012_to = open("new_data/tst2012.to", "w")
-
-        tst2013_from = open("new_data/tst2013.from", "w")
-        tst2013_to = open("new_data/tst2013.to", "w")
 
         total_length = len(file_convos["conversations"])
 
