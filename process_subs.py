@@ -2,7 +2,6 @@ import re
 import os
 import hashlib
 import sqlite3
-from progress.bar import ChargingBar
 from fnmatch import filter
 
 remove_timecodes_re = r"\d+\n\d+:\d+:\d+,\d+ --> \d+:\d+:\d+,\d+\n"
@@ -64,16 +63,17 @@ def get_formatted_id():
 
 
 def create_numbered_dir():
-    if processed_count % 100 == 0:
+    if (processed_count-1) % 50 == 0:
         try:
-            os.makedirs("raw/{}".format((processed_count//100) + 1))
+            os.makedirs("raw/{}".format((processed_count//50) + 1))
         except FileExistsError:
             # directory already exists
             pass
 
 
 def get_dir_number():
-    return str((processed_count // 100) + 1)
+    print(processed_count)
+    return str(((processed_count-1) // 50) + 1)
 
 
 drop_table()
@@ -82,16 +82,14 @@ create_table()
 processed_count = get_max_id()
 num_of_files = 0
 
-for path, dirs, files in os.walk("processed"):
+for path, dirs, files in os.walk("unprocessed"):
     for f in filter(files, '*.json'):
         num_of_files += 1
 
-bar = ChargingBar("Progress", max=num_of_files)
 for path, dirs, files in os.walk("unprocessed"):
 
     for f in filter(files, '*.srt'):
         processed_count += 1
-
         fullpath = os.path.abspath(os.path.join(path, f))
         file = open(fullpath, "r")
         file_contents = file.read()
@@ -105,5 +103,5 @@ for path, dirs, files in os.walk("unprocessed"):
             # print(process_srt(file_contents))
         else:
             print("{} is already processed".format(f))
-        bar.next()
-bar.finish()
+        file.close()
+
